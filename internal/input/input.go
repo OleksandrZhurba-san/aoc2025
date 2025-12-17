@@ -2,14 +2,20 @@ package input
 
 import (
 	"os"
-	"strings"
 )
 
-func Read(path string) ([]string, error) {
+func Read(path string) (string, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return strings.Split(strings.TrimSpace(string(data)), "\n"), nil
+	return string(data), nil
+}
+
+func GetArgs(defaultPath string) (string) {
+	if len(os.Args) > 1 {
+		defaultPath = os.Args[1]
+	}
+	return defaultPath
 }

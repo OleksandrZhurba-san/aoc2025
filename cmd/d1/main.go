@@ -3,8 +3,8 @@ package main
 import (
 	"aoc2025/internal/input"
 	"fmt"
-	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -12,18 +12,14 @@ func main() {
 	point := 50
 	count := 0
 
-	path := "data/day1.txt"
-
-	if len(os.Args) > 1 {
-		path = os.Args[1]
-	}
-
+	path := input.GetArgs("data/day1.txt")
 	data, err := input.Read(path)
+	parsedStrs := strings.SplitSeq(strings.TrimSpace(string(data)), "\n")
 	if err != nil {
 		panic(err)
 	}
 
-	for _, v := range data {
+	for v := range parsedStrs {
 		if v == "" {
 			continue
 		}
