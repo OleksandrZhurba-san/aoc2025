@@ -13,29 +13,42 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	parsedStrs := strings.SplitSeq(strings.TrimSpace(string(data)), "\n")
-
+	parsedStrs := strings.Split(strings.TrimSpace(string(data)), "\n")
 	sum := 0
+	for _, v := range parsedStrs {
+		num := 0
+		res := solution(v, 12)
 
-	for v := range parsedStrs {
-		first := -1
-		second := -1
-		idx := -1
-
-		for i := 0; i < len(v)-1; i++ {
-			digit := int(v[i] - '0')
-			if first < digit {
-				first = digit
-				idx = i
-			}
+		for _, d := range res {
+			num = num*10 + d
 		}
-		for _, ch := range v[idx+1:] {
-			digit := int(ch - '0')
-			if second < digit {
-				second = digit
-			}
-		}
-		sum += (first * 10) + second
+		sum += num
 	}
+
 	fmt.Printf("Sum: %d\n", sum)
+}
+
+func solution(v string, k int) []int {
+	result := make([]int, 0, k)
+	start := 0
+
+	for k > 0 {
+		end := len(v) - k
+		best := -1
+		bestIdx := -1
+
+		for i := start; i <= end; i++ {
+			d := int(v[i] - '0')
+			if d > best {
+				best = d
+				bestIdx = i
+			}
+		}
+		result = append(result, best)
+		start = bestIdx + 1
+		k--
+	}
+
+	fmt.Println(result)
+	return result
 }
