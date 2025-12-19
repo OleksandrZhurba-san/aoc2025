@@ -14,10 +14,10 @@ func main() {
 
 	path := input.GetArgs("data/day1.txt")
 	data, err := input.Read(path)
-	parsedStrs := strings.SplitSeq(strings.TrimSpace(string(data)), "\n")
 	if err != nil {
 		panic(err)
 	}
+	parsedStrs := strings.SplitSeq(strings.TrimSpace(string(data)), "\n")
 
 	for v := range parsedStrs {
 		if v == "" {
