@@ -6,8 +6,36 @@ import (
 	"strings"
 )
 
-func solution() {
+type P struct {
+	r, c int
+}
 
+var neighbors = []P{
+	{-1, -1}, {-1, 0}, {-1, 1},
+	{0, -1}, {0, 1},
+	{1, -1}, {1, 0}, {1, 1},
+}
+
+func inBounds(grid []string, p P) bool {
+	return p.r >= 0 && p.r < len(grid) && p.c >= 0 && p.c < len(grid[p.r])
+}
+
+func isRoll(grid []string, p P) bool {
+	return grid[p.r][p.c] == '@'
+}
+
+func countAdjRolls(grid []string, at P) int {
+	count := 0
+	for _, d := range neighbors {
+		np := P{at.r + d.r, at.c + d.c}
+		if !inBounds(grid, np) {
+			continue
+		}
+		if isRoll(grid, np) {
+			count++
+		}
+	}
+	return count
 }
 
 func main() {
@@ -19,35 +47,18 @@ func main() {
 	}
 	parsedStrs := strings.Split(strings.TrimSpace(string(data)), "\n")
 
-	solution()
-
 	xCount := 0
 
-	rows := len(parsedStrs)
 	for r := range parsedStrs {
-		cols := len(parsedStrs[r])
-		for c := range cols {
-			if parsedStrs[r][c] == '@' {
-				count := 0
-				for dr := -1; dr <= 1; dr++ {
-					for dc := -1; dc <= 1; dc++ {
-						if dr == 0 && dc == 0 {
-							continue
-						}
-						nr := r + dr
-						nc := c + dc
+		for c := range parsedStrs[r] {
+			at := P{r, c}
 
-						if nr < 0 || nr >= rows || nc < 0 || nc >= cols {
-							continue
-						}
-						if parsedStrs[nr][nc] == '@' {
-							count++
-						}
-					}
-				}
-				if count < 4 {
-					xCount++
-				}
+			if !isRoll(parsedStrs, at) {
+				continue
+			}
+
+			if countAdjRolls(parsedStrs, at) < 4 {
+				xCount++
 			}
 		}
 	}
