@@ -16,15 +16,15 @@ var neighbors = []P{
 	{1, -1}, {1, 0}, {1, 1},
 }
 
-func inBounds(grid []string, p P) bool {
+func inBounds(grid [][]byte, p P) bool {
 	return p.r >= 0 && p.r < len(grid) && p.c >= 0 && p.c < len(grid[p.r])
 }
 
-func isRoll(grid []string, p P) bool {
+func isRoll(grid [][]byte, p P) bool {
 	return grid[p.r][p.c] == '@'
 }
 
-func countAdjRolls(grid []string, at P) int {
+func countAdjRolls(grid [][]byte, at P) int {
 	count := 0
 	for _, d := range neighbors {
 		np := P{at.r + d.r, at.c + d.c}
@@ -38,6 +38,12 @@ func countAdjRolls(grid []string, at P) int {
 	return count
 }
 
+func replaceRolls(grid [][]byte, ps []P) {
+	for _, p := range ps {
+		grid[p.r][p.c] = 'x'
+	}
+}
+
 func main() {
 
 	path := input.GetArgs("data/day4.txt")
@@ -47,20 +53,35 @@ func main() {
 	}
 	parsedStrs := strings.Split(strings.TrimSpace(string(data)), "\n")
 
+	grid := make([][]byte, len(parsedStrs))
+	for i := range parsedStrs {
+		grid[i] = []byte(parsedStrs[i])
+	}
 	xCount := 0
 
-	for r := range parsedStrs {
-		for c := range parsedStrs[r] {
-			at := P{r, c}
+	for {
+		coord := make([]P, 0)
 
-			if !isRoll(parsedStrs, at) {
-				continue
-			}
+		for r := range grid {
+			for c := range grid[r] {
+				at := P{r, c}
 
-			if countAdjRolls(parsedStrs, at) < 4 {
-				xCount++
+				if !isRoll(grid, at) {
+					continue
+				}
+
+				if countAdjRolls(grid, at) < 4 {
+					coord = append(coord, at)
+				}
 			}
 		}
+		if len(coord) == 0 {
+			break
+		}
+		xCount += len(coord)
+		replaceRolls(grid, coord)
 	}
+
 	fmt.Printf("%d\n", xCount)
+
 }
